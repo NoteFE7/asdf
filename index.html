@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>벨소리 앱</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Noto Sans KR", sans-serif;
+    background: #f2f3f7;
+    transition: 0.3s;
+}
+
+/* 다크모드 */
+body.dark {
+    background: #121212;
+    color: white;
+}
+
+h1 {
+    padding: 15px;
+}
+
+/* 카드 */
+.card {
+    background: white;
+    border-radius: 20px;
+    margin: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+body.dark .card {
+    background: #1e1e1e;
+}
+
+/* 플레이어 */
+audio {
+    width: 100%;
+}
+
+/* 화면 */
+.screen {
+    display: none;
+    animation: fade 0.3s;
+}
+.screen.active {
+    display: block;
+}
+
+@keyframes fade {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+/* 게임 */
+#gameArea {
+    width: 280px;
+    height: 280px;
+    background: #ddd;
+    margin: 20px auto;
+    border-radius: 20px;
+    position: relative;
+}
+body.dark #gameArea {
+    background: #333;
+}
+
+#target {
+    width: 40px;
+    height: 40px;
+    background: red;
+    border-radius: 50%;
+    position: absolute;
+}
+
+/* 하단 네비 */
+.nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+body.dark .nav {
+    background: #1e1e1e;
+}
+
+.nav button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* 토글 버튼 */
+.toggle {
+    margin: 10px;
+    padding: 8px 15px;
+    border-radius: 15px;
+    border: none;
+    background: #0b57d0;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎧 벨소리 앱</h1>
+
+<button class="toggle" onclick="toggleDark()">🌙 다크모드</button>
+
+<!-- 🎧 음악 화면 -->
+<div id="music" class="screen active">
+<div class="card">
+<h3>📱 노트 FE</h3>
+<audio controls id="a1">
+<source src="over_the_horizon_s8.mp3">
+</audio>
+</div>
+
+<div class="card">
+<h3>🔥 노트7</h3>
+<audio controls id="a2">
+<source src="over_the_horizon_2016.mp3">
+</audio>
+</div>
+</div>
+
+<!-- 🎮 게임 화면 -->
+<div id="game" class="screen">
+<div class="card">
+<h3>🎯 미니게임</h3>
+<p>점수: <span id="score">0</span></p>
+<button onclick="startGame()">시작</button>
+
+<div id="gameArea">
+<div id="target"></div>
+</div>
+</div>
+</div>
+
+<!-- ⚙ 설정 -->
+<div id="settings" class="screen">
+<div class="card">
+<h3>⚙ 설정</h3>
+<p>여기에 기능 추가 가능</p>
+</div>
+</div>
+
+<!-- 하단 네비 -->
+<div class="nav">
+<button onclick="show('music')">🎧 음악</button>
+<button onclick="show('game')">🎮 게임</button>
+<button onclick="show('settings')">⚙ 설정</button>
+</div>
+
+<script>
+// 화면 전환
+function show(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+// 다크모드
+function toggleDark(){
+document.body.classList.toggle("dark");
+}
+
+// 오디오 자동 정지
+const a1=document.getElementById("a1");
+const a2=document.getElementById("a2");
+
+a1.onplay=()=>a2.pause();
+a2.onplay=()=>a1.pause();
+
+// 게임
+let score=0;
+const target=document.getElementById("target");
+
+function move(){
+target.style.left=Math.random()*240+"px";
+target.style.top=Math.random()*240+"px";
+}
+
+target.onclick=(e)=>{
+e.stopPropagation();
+score++;
+document.getElementById("score").innerText=score;
+move();
+};
+
+function startGame(){
+score=0;
+document.getElementById("score").innerText=score;
+move();
+setInterval(move,700);
+}
+</script>
+
+</body>
+</html>
